@@ -27,3 +27,10 @@ npm install rimraf --save-dev
 }
 
 npm install --save-dev @types/styled-components
+
+#auto deployment setup when push
+#git remote add deploy ec2-server-username@ec2-public-dns-here/or use public ip address:github-hook-you-created-inside-ec2
+git remote add deploy ec2-user@ec2-54-198-44-211.compute-1.amazonaws.com:deploy-github-hook.git
+git push -u deploy main
+# if auto deployment has permission error, you can use below syntax to debug, look for ssh that has accepted status/implies acceptance start solving there.
+$env:GIT_SSH_COMMAND = "ssh -v"
