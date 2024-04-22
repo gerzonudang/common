@@ -1,0 +1,12 @@
+removing mongodb account,
+
+create new account in mongodb
+
+update env mongodb string for BE and AUTH with new one
+
+for docker: update docker-compose.yml mongodb string connection
+
+deploy updates for BE and AUTH 
+
+decommission used monggodb account
+

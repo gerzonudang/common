@@ -1,0 +1,4 @@
+Amplify setup Rewrites and redirects to fix source map issue
+Source address: </^[^.]+$|\.(?!(css|gif|ico|jpg|js|png|txt|svg|woff|ttf)$)([^.]+$)/>
+Target address: /index.html
+Type: 200

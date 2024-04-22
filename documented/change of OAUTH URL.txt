@@ -1,0 +1,11 @@
+Change of auth url
+- update 0auth
+- https://console.cloud.google.com/
+- credentials
+- select affected project
+- Authorized JavaScript origins
+- Authorized redirect URIs
+
+- update AUTH_URL in neatlist-api.com
+- env > AUTH_URL
+- include in cors 

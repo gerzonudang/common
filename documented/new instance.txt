@@ -1,0 +1,9 @@
+Create server instance
+- launch instance
+- name
+- My AMI OWNED BY ME
+- Everneat Server Setup
+- select instance type
+- key pair : NEATLIST-042124
+- Network setting: important - edit choose subnet availability zone: us-east-1d
+- min storage 30gb
