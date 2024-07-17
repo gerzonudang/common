@@ -1,0 +1,2 @@
+# change subscription name
+- change EmployerMembershipType and ProfessionalMembershipType enum in BE
