@@ -5,7 +5,7 @@ for windows :
 https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis/install-redis-on-windows/
 first time install : wsl --install
 type wsl to run linux again
-type redis-cli to check, right ping it should reply PONG
+type redis-cli to check, write ping it should reply PONG
 start redis  : sudo service redis-server start
 for linux :
 
