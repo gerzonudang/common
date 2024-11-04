@@ -1,21 +1,21 @@
-Update app
+#Update app
 
-#install bash
+##install bash
 sudo yum update -y
 -
 sudo yum install git -y
 -
 git -v
 
-#nvm
+##nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 - 
-refresh the page
+reboot instance
 -
-#node
+##node
 nvm install node
 
-#github repo setup
+##github repo setup
 ssh-keygen -t rsa -b 4096 -C "gerzon@everneat.co"
 -
 cat /root/.ssh/id_rsa.pub
@@ -24,44 +24,32 @@ cat /root/.ssh/id_rsa.pub
 - to see signature "ssh-keygen -lf /path/to/key.pub"
 
 #redis-server
-src : https://medium.com/@raghavendralacharya/installing-redis-on-aws-ec2-instance-amazon-linux-d1c7719fdc27
--
-sudo yum install gcc
--
-wget http://download.redis.io/redis-stable.tar.gz
-tar xvzf redis-stable.tar.gz
-cd redis-stable
-make
--
-echo 'vm.overcommit_memory = 1' | sudo tee -a /etc/sysctl.conf
--
-check if there is tsc in list : cat /sys/devices/system/clocksource/clocksource0/available_clocksource
--
-sudo nano /etc/default/grub
--
-(Add clocksource=tsc to the list of parameters. Make sure to keep it within the GRUB_CMDLINE_LINUX_DEFAULT)
-GRUB_CMDLINE_LINUX_DEFAULT="quiet splash clocksource=tsc"
--
-sudo grub2-mkconfig -o /boot/grub2/grub.cfg
--
-sudo reboot
--
-src/redis-server --daemonize yes or redis-server --daemonize yes
--
-check started status: ps aux | grep redis-server
-- to stop
-./src/redis-cli shutdown
-update branch
+## udpated redis setup here:https://medium.com/preprintblog/how-to-set-up-redis-6-on-aws-ec2-amazon-linux-2023-fa8cb358e6e2
+##Ensure you have the latest package information by running the following command:
+sudo dnf update
 
+##Install Redis, Use the dnf package manager to install the Redis server package
+sudo dnf install redis6
 
-#install pm2
+##To automatically start Redis whenever your EC2 instance boots, run
+sudo systemctl enable redis6
+sudo systemctl start redis6
+
+##Verify Redis is running,Check the Redis server status using:
+sudo systemctl status redis6
+
+update branch/clone
+
+##TEST Connect to Redis using the CLI:
+redis6-cli -h 127.0.0.1 -p 6379
+127.0.0.1:6379> ping
+
+##install pm2
 npm remove -g pm2
 npm install -g uuid@latest
-npm install -g @socket.io/pm2
+npm install -g pm2
 
-#install redis
-https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis/install-redis-on-linux/
-
+# increse memory heap go to documentation 'memory heap node.txt'
 #github repo setup
 
 go to production branch
@@ -71,4 +59,13 @@ git pull
 npm i
 
 npm run start:app
+## save app list for auto startup on bootup
+pm2 save
+## start pm2 on bootup 
+pm2 startup
+
+cd ~
+cat /var/log/user-data.log
+#show storage usage : df -h
+
 

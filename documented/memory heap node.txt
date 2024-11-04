@@ -30,3 +30,4 @@ echo '/mnt/1GiB.swap swap swap defaults 0 0' | sudo tee -a /etc/fstab
 export NODE_OPTIONS="--max_old_space_size=4096"
 
 #update pm2
+
