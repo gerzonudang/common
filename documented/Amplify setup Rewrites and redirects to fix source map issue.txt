@@ -1,3 +1,6 @@
+diagnostic thru curl command below(where HTTP/1.1 404 Not Found):
+curl -A "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)" -I https://www.everneat.co/products/oven-scrub
+curl -A "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)" -I -L https://www.everneat.co/products/oven-scrub
 - googlebot 404
 - page not found in google ad
 - page not found in google url inspector
