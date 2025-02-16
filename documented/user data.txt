@@ -4,42 +4,29 @@
 exec > /var/log/user-data.log 2>&1
 
 # Update package information
-sudo dnf update -y
+dnf update -y
 
 # Install Node.js and npm
-sudo dnf install -y nodejs npm
+dnf install -y nodejs npm
 
 # Install pm2 globally
-sudo npm install pm2@latest -g
+npm install pm2@latest -g
 
 # Ensure the directory exists
 if [ -d "/home/ec2-user/NEATLIST-BE" ]; then
   cd /home/ec2-user/NEATLIST-BE
 
   # Install dependencies
-  #sudo -u ec2-user npm install
-
-  # Build the application
-  #sudo -u ec2-user npm run build
+  npm install
 
   #run script inside package.json
-  sudo -u ec2-user npm run start:main
-
-  # Start your application with pm2
-  #sudo -u ec2-user pm2 start ecosystem.config.js --only neatlist-fe-server --env production
+  npm run start:beta
 
   # Save the pm2 process list
-  sudo -u ec2-user pm2 save
-
-  # Set up pm2 to run on boot
-  sudo env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u ec2-user --hp /home/ec2-user
+  pm2 save
 
   # Reload the systemd daemon
-  sudo systemctl daemon-reload
-
-  # Enable and start the pm2 service
-  sudo systemctl enable pm2-ec2-user
-  sudo systemctl start pm2-ec2-user
+  systemctl daemon-reload
 
 else
   echo "Directory /home/ec2-user/NEATLIST-BE does not exist"
