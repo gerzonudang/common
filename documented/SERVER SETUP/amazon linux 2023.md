@@ -6,7 +6,7 @@
 
 `sudo yum install git -y`
 
-``` git -v` ``
+`git -v`
 
 ## nvm
 
