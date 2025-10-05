@@ -1,36 +1,58 @@
 #!/bin/bash
+set -euo pipefail
+exec > >(tee -a /var/log/user-data.log) 2>&1
 
-# Redirect all output to a log file
-exec > /var/log/user-data.log 2>&1
-
-# Update package information
+# 1. system packages -------------------------------------------------------
 dnf update -y
+dnf install -y nodejs npm git
+npm install -g pm2
 
-# Install Node.js and npm
-dnf install -y nodejs npm
+# 2. deploy key for ec2-user ----------------------------------------------
+mkdir -p /home/ec2-user/.ssh
 
-# Install pm2 globally
-npm install pm2@latest -g
+# Use the PRIVATE key that pairs with the public key shown above
+cat >/home/ec2-user/.ssh/id_rsa <<'EOF'
+-----BEGIN OPENSSH PRIVATE KEY-----
+[PASTE YOUR PRIVATE KEY FROM /root/.ssh/id_rsa HERE]
+-----END OPENSSH PRIVATE KEY-----
+EOF
 
-# Ensure the directory exists
-if [ -d "/home/ec2-user/NEATLIST-BE" ]; then
-  cd /home/ec2-user/NEATLIST-BE
+chmod 600 /home/ec2-user/.ssh/id_rsa
+chown -R ec2-user:ec2-user /home/ec2-user/.ssh
 
-  # Pull latest code from git
-  git pull
+# Add GitHub to known_hosts
+sudo -u ec2-user ssh-keyscan github.com >> /home/ec2-user/.ssh/known_hosts
 
-  # Install dependencies
-  npm install
+# Configure SSH to not prompt
+cat >/home/ec2-user/.ssh/config <<'EOF'
+Host github.com
+  StrictHostKeyChecking accept-new
+  IdentityFile ~/.ssh/id_rsa
+EOF
+chmod 600 /home/ec2-user/.ssh/config
+chown ec2-user:ec2-user /home/ec2-user/.ssh/config
 
-  #run script inside package.json
-  npm run start:beta
-
-  # Save the pm2 process list
-  pm2 save
-
-  # Reload the systemd daemon
-  systemctl daemon-reload
-
-else
-  echo "Directory /home/ec2-user/NEATLIST-BE does not exist"
+# 3. clone repo if it doesn't exist ---------------------------------------
+APP_DIR=/home/ec2-user/NEATLIST-BE
+if [[ ! -d "$APP_DIR" ]]; then
+  sudo -u ec2-user git clone git@github.com:gerzon-everneat/NEATLIST-BE.git "$APP_DIR"
 fi
+
+# 4. pull latest code ------------------------------------------------------
+cd "$APP_DIR"
+sudo -u ec2-user git fetch
+sudo -u ec2-user git checkout main
+sudo -u ec2-user git reset --hard origin/main
+
+# 5. install deps & start app ---------------------------------------------
+sudo -u ec2-user npm ci --production
+
+# Start with PM2
+sudo -u ec2-user pm2 delete neatlist-be || true
+sudo -u ec2-user pm2 start npm --name neatlist-be -- run start:beta
+sudo -u ec2-user pm2 save
+
+# Setup PM2 to start on boot
+env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u ec2-user --hp /home/ec2-user
+
+echo "User-data finished at $(date)"
