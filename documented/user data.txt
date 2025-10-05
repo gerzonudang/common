@@ -16,6 +16,9 @@ npm install pm2@latest -g
 if [ -d "/home/ec2-user/NEATLIST-BE" ]; then
   cd /home/ec2-user/NEATLIST-BE
 
+  # Pull latest code from git
+  git pull
+
   # Install dependencies
   npm install
 
