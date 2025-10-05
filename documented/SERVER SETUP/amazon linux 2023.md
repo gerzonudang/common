@@ -19,7 +19,8 @@
 ` nvm install node`
 
 ## github repo setup
-
+# try `sudo -u ec2-user ssh-keygen -t rsa -b 4096 -C "gerzon@everneat.co" -f /home/ec2-user/.ssh/id_rsa -N ""`
+# problem below is that root is gonna be the owner of _id_rsa files. gonna have problems win setting user data in auto scale
 `ssh-keygen -t rsa -b 4096 -C "gerzon@everneat.co" `
 `cat /root/.ssh/id_rsa.pub`
 -copy results
